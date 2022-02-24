@@ -1,7 +1,57 @@
 .chatRoom {
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 100%;
-    gap: 5%;
+}
+
+.chatRoom > div {
+    font-size: 18px;
+}
+
+.chatRoom-header {
+    display: flex;
+    align-items: center;
+    height: 5%;
+    padding: 0.5rem;
+}
+
+.chatRoom-chatbox {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: scroll;
+    padding: 1rem;
+}
+
+.chatRoom-chatbox > .other-user {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.chatRoom-chatbox > .current-user {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.chatRoom-type {
+    display: flex;
+    height: 5%;
+    padding: 0.5rem;
+    background-color: rgb(255, 255, 224);
+}
+
+.chatRoom-type > .messages {
+    font-size: 18px;
+    width: 75%;
+}
+
+.material-icons.chatRoom-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+}
+
+.material-icons.chatRoom-center:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
