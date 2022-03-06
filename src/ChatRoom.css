@@ -25,12 +25,14 @@
 
 .chatRoom-chatbox > .other-user {
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .chatRoom-chatbox > .current-user {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .chatRoom-type {

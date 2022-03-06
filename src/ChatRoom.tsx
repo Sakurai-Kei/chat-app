@@ -1,34 +1,34 @@
-import { time } from "console";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, onSnapshot, doc, query } from "firebase/firestore";
+import { getFirestore, collection, getDocs, onSnapshot, doc, query, Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import firebaseConfig from "./firebaseConfig";
+import isEqual from "lodash/isEqual"
 
-async function getMessages() {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore();
-
-    const messages = query(collection(db, "messages"));
-    const subToMessages = onSnapshot(messages, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-        const { message, timestamp, userID } = doc.data();
-        console.log(message,timestamp,userID);
-        })
-    })
-   
-    // getMessages.forEach((doc) => {
-    //     console.log(doc.id, "=>", doc.data());
-    //     const {message, timestamp, userID } = doc.data();
-    //     console.log(message);
-    //     console.log(userID);
-    //     console.log(timestamp);
-    // })
-
-    // return getMessages;
+function isUser(messageUserID: string, userID: string) {
+    if(messageUserID === userID) {
+        return "current-user";
+    }
+    return "other-user";
 }
 
 
-function ChatRoom() {
-    getMessages();
+function ChatRoom(){
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore();
+    const user = JSON.parse(sessionStorage.user)
+    const [messagesCol, setMessagesCol] = useState([] as unknown[]);
+    let messageFromFirestore: unknown[] = [];
+    console.log(user)
+    
+    if(isEqual(messagesCol, messageFromFirestore)) {
+        const messages = query(collection(db, "messages"));
+        const subToMessages = onSnapshot(messages, (querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                messageFromFirestore = messageFromFirestore.concat(doc.data())
+            })
+            setMessagesCol(messageFromFirestore);
+        })
+    }
 
     return(
         <div className="chatRoom chatRoom-container">
@@ -38,9 +38,14 @@ function ChatRoom() {
                 </div>
             </div>
             <div className="chatRoom-chatbox">
-                {}
-                <div className="other-user">someone's chat</div>
-                <div className="current-user">my chat</div>
+                {messagesCol.map((messageObj: any) => {
+                    return (
+                        <div key={messageObj.timestamp} className={isUser(messageObj.userID, user.uid)}>
+                            <div> {messageObj.message} </div>
+                            <div> {messageObj.displayName} </div>
+                        </div>
+                    );
+                })}
             </div>
             <div className="chatRoom-type">
                 <input className="messages" type="text" id="messages" name="messages"></input>

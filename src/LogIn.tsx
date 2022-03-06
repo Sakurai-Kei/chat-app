@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import firebaseConfig from './firebaseConfig';
 
@@ -15,11 +15,13 @@ function LogIn() {
   async function googleSignIn() {
     try {
     let result = await signInWithPopup(auth, provider);
+    // let result = await setPersistence(auth, browserSessionPersistence)
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential?.accessToken;
     const user = result.user;
     if(user) {
-      navigate("/chat-room")
+      sessionStorage.setItem("user", JSON.stringify(user))
+      navigate("/chat-room", { replace: true })
     }
 
     }
