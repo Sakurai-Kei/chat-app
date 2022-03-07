@@ -14,13 +14,15 @@ function LogIn() {
 
   async function googleSignIn() {
     try {
-    let result = await signInWithPopup(auth, provider);
-    // let result = await setPersistence(auth, browserSessionPersistence)
+    // let result = await signInWithPopup(auth, provider);
+    let result = await setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        return signInWithPopup(auth, provider);
+      })
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential?.accessToken;
     const user = result.user;
     if(user) {
-      sessionStorage.setItem("user", JSON.stringify(user))
       navigate("/chat-room", { replace: true })
     }
 

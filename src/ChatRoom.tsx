@@ -3,7 +3,7 @@ import { getFirestore, collection, setDoc, onSnapshot, doc, query, Timestamp, Fi
 import { useEffect, useState } from "react";
 import firebaseConfig from "./firebaseConfig";
 import isEqual from "lodash/isEqual"
-import { User } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
 
 function isUser(messageUserID: string, userID: string) {
@@ -26,11 +26,11 @@ function sendMessage(db: Firestore, user: User) {
 
 function ChatRoom(){
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
     const db = getFirestore();
-    const user: User = JSON.parse(sessionStorage.user)
+    const user = auth.currentUser;
     const [messagesCol, setMessagesCol] = useState([] as unknown[]);
     let messageFromFirestore: unknown[] = [];
-    console.log(messagesCol)
 
     useEffect(() => {
         if(isEqual(messagesCol, messageFromFirestore)) {
@@ -45,6 +45,10 @@ function ChatRoom(){
         }
     })
 
+    if(user === null) {
+        return <div>Wait while we check for authentication. If you are stuck seeing this message, please login if you have not</div>
+    }
+
     return(
         <div className="chatRoom chatRoom-container">
             <div className="chatRoom-header">
@@ -53,7 +57,7 @@ function ChatRoom(){
                 </div>
             </div>
             <div className="chatRoom-chatbox">
-                {messagesCol.map((messageObj: any) => {
+                {messagesCol.sort((x: any,y: any) => x.timestamp - y.timestamp).map((messageObj: any) => {
                     return (
                         <div key={uuidv4()} className={isUser(messageObj.userID, user.uid)}>
                             <div> {messageObj.message} </div>
