@@ -1,59 +1,79 @@
 .chatRoom {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .chatRoom > div {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .chatRoom-header {
-    display: flex;
-    align-items: center;
-    height: 5%;
-    padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  height: 5%;
+  padding: 0.5rem;
 }
 
 .chatRoom-chatbox {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow-y: scroll;
-    padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: scroll;
+  padding: 1rem;
+}
+
+.chatRoom-chatbox > * {
+  background-color: rgb(250, 125, 62);
+  margin: 0.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.messageHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profileImage {
+  border-radius: 50%;
+  width: 2.5rem;
 }
 
 .chatRoom-chatbox > .other-user {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: flex-start;
 }
 
 .chatRoom-chatbox > .current-user {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: flex-end;
 }
 
 .chatRoom-type {
-    display: flex;
-    height: 5%;
-    padding: 0.5rem;
-    background-color: rgb(255, 255, 224);
+  display: flex;
+  height: 5%;
+  padding: 0.5rem;
+  background-color: rgb(255, 255, 224);
 }
 
 .chatRoom-type > .messages {
-    font-size: 18px;
-    width: 75%;
+  font-size: 18px;
+  width: 75%;
 }
 
 .material-icons.chatRoom-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
 }
 
 .material-icons.chatRoom-center:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }

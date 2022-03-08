@@ -27,6 +27,7 @@ function sendMessage(db: Firestore, user: User) {
     displayName: user.displayName,
     message: message,
     timestamp: new Date(),
+    userPhoto: user.photoURL,
     userID: user.uid,
   });
   (document.getElementById("messages")! as HTMLInputElement).value = "";
@@ -40,6 +41,7 @@ function ChatRoom() {
   const user = auth.currentUser;
   const [messagesCol, setMessagesCol] = useState([] as unknown[]);
   let messageFromFirestore: unknown[] = [];
+  console.log(user);
 
   useEffect(() => {
     if (isEqual(messagesCol, messageFromFirestore)) {
@@ -81,8 +83,15 @@ function ChatRoom() {
                 key={uuidv4()}
                 className={isUser(messageObj.userID, user.uid)}
               >
+                <div className="messageHeader">
+                  <img
+                    src={messageObj.userPhoto}
+                    alt="unable to retrieve"
+                    className="profileImage"
+                  />
+                  <div className="displayName">{messageObj.displayName}</div>
+                </div>
                 <div> {messageObj.message} </div>
-                <div> {messageObj.displayName} </div>
               </div>
             );
           })}
