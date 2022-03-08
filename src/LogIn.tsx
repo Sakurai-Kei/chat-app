@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import {
   getAuth,
-  signInWithPopup,
   GoogleAuthProvider,
   setPersistence,
   browserSessionPersistence,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import firebaseConfig from "./firebaseConfig";
@@ -19,19 +20,15 @@ function LogIn() {
   const provider = new GoogleAuthProvider();
   auth.languageCode = "it";
 
-  async function googleSignIn() {
+  (async function getResult() {
     try {
-      // let result = await signInWithPopup(auth, provider);
-      let result = await setPersistence(auth, browserSessionPersistence).then(
-        () => {
-          return signInWithPopup(auth, provider);
-        }
-      );
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const token = credential?.accessToken;
-      const user = result.user;
-      if (user) {
+      let result = await getRedirectResult(auth);
+      if (result !== null) {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const token = credential?.accessToken;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const user = result.user;
         navigate("/chat-room", { replace: true });
       }
     } catch (error: any) {
@@ -41,6 +38,11 @@ function LogIn() {
       const credential = GoogleAuthProvider.credentialFromError(error);
       console.error(errorCode, errorMessage, email, credential);
     }
+  })();
+
+  function googleSignIn() {
+    setPersistence(auth, browserSessionPersistence);
+    signInWithRedirect(auth, provider);
   }
 
   return (

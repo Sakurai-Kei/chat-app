@@ -41,7 +41,6 @@ function ChatRoom() {
   const user = auth.currentUser;
   const [messagesCol, setMessagesCol] = useState([] as unknown[]);
   let messageFromFirestore: unknown[] = [];
-  console.log(user);
 
   useEffect(() => {
     if (isEqual(messagesCol, messageFromFirestore)) {

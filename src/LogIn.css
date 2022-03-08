@@ -1,15 +1,14 @@
 .login {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    gap: 3%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 3%;
 }
 
 .btn-login-google {
-    min-width: 25%;
-    border-radius: 5px;
-    overflow: auto;
+  min-width: 25%;
+  border-radius: 0.5rem;
+  overflow: auto;
 }
-
