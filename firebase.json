@@ -1,28 +1,31 @@
 {
   "hosting": {
     "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/404.html"
+      }
     ],
-    "headers": [ {
-
-      "source": "**/*.@(eot|js|tsx|otf|ttf|ttc|woff|font.css)",
-      "headers": [ 
+    "headers": [
       {
-        "key": "Access-Control-Allow-Origin",
-        "value": "*"
-      }, 
-      {
-        "key": "Access-Control-Allow-Methods",
-        "value": "DELETE, POST, GET, OPTIONS"
-      },
-      {
-        "key": "Access-Control-Allow-Headers",
-        "value": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-        } 
-      ]
-    }]
+        "source": "**/*.@(eot|js|tsx|otf|ttf|ttc|woff|font.css)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "DELETE, POST, GET, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+          }
+        ]
+      }
+    ]
   }
 }
