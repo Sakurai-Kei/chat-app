@@ -7,11 +7,13 @@ import {
   Firestore,
   addDoc,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import firebaseConfig from "./firebaseConfig";
 import isEqual from "lodash/isEqual";
 import { getAuth, User } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
+import Modal from "./components/Modal";
+import type { Message } from "./components/Modal";
 
 function isUser(messageUserID: string, userID: string) {
   if (messageUserID === userID) {
@@ -20,17 +22,30 @@ function isUser(messageUserID: string, userID: string) {
   return "other-user";
 }
 
+function profileModal(booleanInput: boolean) {
+  if (booleanInput) {
+    return false;
+  }
+  return true;
+}
+
 function sendMessage(db: Firestore, user: User) {
   let message = (document.getElementById("messages") as HTMLInputElement).value;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const docRef = addDoc(collection(db, "messages"), {
-    displayName: user.displayName,
-    message: message,
-    timestamp: new Date(),
-    userPhoto: user.photoURL,
-    userID: user.uid,
-  });
-  (document.getElementById("messages")! as HTMLInputElement).value = "";
+  if (
+    message.trim().length !== 0 &&
+    message !== null &&
+    message !== undefined
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const docRef = addDoc(collection(db, "messages"), {
+      displayName: user.displayName,
+      message: message,
+      timestamp: new Date(),
+      userPhoto: user.photoURL,
+      userID: user.uid,
+    });
+    (document.getElementById("messages")! as HTMLInputElement).value = "";
+  }
 }
 
 function ChatRoom() {
@@ -39,8 +54,14 @@ function ChatRoom() {
   const auth = getAuth();
   const db = getFirestore();
   const user = auth.currentUser;
-  const [messagesCol, setMessagesCol] = useState([] as unknown[]);
-  let messageFromFirestore: unknown[] = [];
+  const [messagesCol, setMessagesCol] = useState([] as Message[]);
+  const [modalProp, setModalProp] = useState({
+    displayName: "",
+    userPhoto: "",
+    userID: "",
+  });
+  const [show, setShow] = useState(false);
+  let messageFromFirestore: Message[] = [];
 
   useEffect(() => {
     if (isEqual(messagesCol, messageFromFirestore)) {
@@ -48,7 +69,9 @@ function ChatRoom() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const subToMessages = onSnapshot(messages, (querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          messageFromFirestore = messageFromFirestore.concat(doc.data());
+          messageFromFirestore = messageFromFirestore.concat(
+            doc.data() as Message
+          );
         });
         setMessagesCol(messageFromFirestore);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,18 +98,30 @@ function ChatRoom() {
       </div>
       <div className="chatRoom-chatbox">
         {messagesCol
-          .sort((x: any, y: any) => x.timestamp - y.timestamp)
-          .map((messageObj: any) => {
+          .sort(
+            (x: Message, y: Message) =>
+              x.timestamp.valueOf() - y.timestamp.valueOf()
+          )
+          .map((messageObj: Message) => {
             return (
               <div
                 key={uuidv4()}
                 className={isUser(messageObj.userID, user.uid)}
               >
+                <Modal prop={modalProp} show={show} />
                 <div className="messageHeader">
                   <img
                     src={messageObj.userPhoto}
                     alt="unable to retrieve"
-                    className="profileImage"
+                    className={`profileImage ${messageObj.userID}`}
+                    onClick={() => {
+                      setModalProp({
+                        displayName: messageObj.displayName,
+                        userPhoto: messageObj.userPhoto,
+                        userID: messageObj.userID,
+                      });
+                      setShow(profileModal(show));
+                    }}
                   />
                   <div className="displayName">{messageObj.displayName}</div>
                 </div>
@@ -97,19 +132,24 @@ function ChatRoom() {
       </div>
       <div className="chatRoom-type">
         <input
+          required
           className="messages"
           type="text"
           id="messages"
           name="messages"
           onKeyPress={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               sendMessage(db, user);
             }
           }}
         ></input>
         <button
           className="material-icons chatRoom-center"
-          onClick={() => sendMessage(db, user)}
+          onClick={(e) => {
+            e.preventDefault();
+            sendMessage(db, user);
+          }}
         >
           keyboard_return
         </button>
